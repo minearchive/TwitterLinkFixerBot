@@ -24,7 +24,7 @@ async def on_message(message):
             ("fxtwitter.com" in message.content) or ("twitter.com/home" in message.content)):
         await message.delete()
         fixed = message.content.replace("twitter.com", "fxtwitter.com")
-        msg = await channel.send(f"{message.author}さんが送信したリンクです。\n{fixed}")
+        msg = await channel.send(f"Sent by {message.author}.\n{fixed}")
         await msg.add_reaction('❌')
 
 
@@ -37,10 +37,10 @@ async def on_reaction_add(reaction, user):
     users = []
     async for userr in reaction.users():
         users.append(userr)
-    if (reaction.count >= 3 and client.user in users) and (user in users):
+    if (reaction.count > 1 and client.user in users) and (user in users):
         await reaction.message.delete()
         channel = reaction.message.channel
-        await channel.send(f"{user.name}さんが削除しました。")
+        await channel.send(f"Link deleted by {user.name}")
 
 if args.token is None:
     print("Token is empty.")
