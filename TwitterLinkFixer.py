@@ -24,7 +24,7 @@ async def on_message(message):
             ("fxtwitter.com" in message.content) or ("twitter.com/home" in message.content)):
         await message.delete()
         fixed = message.content.replace("twitter.com", "fxtwitter.com")
-        msg = await channel.send(f"Sent by {message.author}.\n{fixed}")
+        msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
         await msg.add_reaction('❌')
 
 
@@ -41,6 +41,12 @@ async def on_reaction_add(reaction, user):
         await reaction.message.delete()
         channel = reaction.message.channel
         await channel.send(f"Link deleted by {user.name}")
+
+def get_username(author:discord.User|discord.Member):
+    if author.discriminator == "0":
+        return f"@{author.name}"
+    else:
+        return f"{author.name}#{author.discriminator}"
 
 if args.token is None:
     print("Token is empty.")
