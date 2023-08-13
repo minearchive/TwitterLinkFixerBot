@@ -1,5 +1,4 @@
-import discord
-import argparse
+import discord, argparse, re
 
 parser = argparse.ArgumentParser(description='set token')
 parser.add_argument('-token', type=str, help='set your token', default=None)
@@ -20,10 +19,14 @@ async def on_ready():
 @client.event
 async def on_message(message):
     channel = message.channel
-    if ("twitter.com" in message.content) and not (
-            ("fxtwitter.com" in message.content) or ("twitter.com/home" in message.content)):
+    if matchTwitter(message):
         await message.delete()
         fixed = message.content.replace("twitter.com", "fxtwitter.com")
+        msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
+        await msg.add_reaction('❌')
+    elif matchX(message):
+        await message.delete()
+        fixed = message.content.replace("x.com", "fxtwitter.com")
         msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
         await msg.add_reaction('❌')
 
@@ -47,6 +50,12 @@ def get_username(author:discord.User|discord.Member):
         return f"@{author.name}"
     else:
         return f"{author.name}#{author.discriminator}"
+
+def matchTwitter(search:str):
+    return re.search(r'https://twitter\.com/\w+/status/\d+', search) != None
+
+def matchX(search:str):
+    return re.search(r'https://x\.com/\w+/status/\d+', search) != None
 
 if args.token is None:
     print("Token is empty.")
