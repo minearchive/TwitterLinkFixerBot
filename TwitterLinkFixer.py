@@ -19,16 +19,17 @@ async def on_ready():
 @client.event
 async def on_message(message):
     channel = message.channel
-    if matchTwitter(message):
-        await message.delete()
-        fixed = message.content.replace("twitter.com", "fxtwitter.com")
-        msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
-        await msg.add_reaction('❌')
-    elif matchX(message):
-        await message.delete()
-        fixed = message.content.replace("x.com", "fxtwitter.com")
-        msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
-        await msg.add_reaction('❌')
+    if type(message.content) == str:
+        if matchTwitter(message.content):
+            await message.delete()
+            fixed = message.content.replace("twitter.com", "fxtwitter.com")
+            msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
+            await msg.add_reaction('❌')
+        elif matchX(message.content):
+            await message.delete()
+            fixed = message.content.replace("x.com", "fxtwitter.com")
+            msg = await channel.send(f"Sent by {get_username(message.author)}.\n{fixed}")
+            await msg.add_reaction('❌')
 
 
 @client.event
